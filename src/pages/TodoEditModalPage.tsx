@@ -7,15 +7,15 @@ import { DialogOverlay, DialogTitle } from "@radix-ui/react-dialog";
 import { useEffect, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router";
 
-const TaskEditModalPage = () => {
+const TodoEditModalPage = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
-  const { taskId } = useParams();
+  const { todoId } = useParams();
 
   const checkId = (id: string) => {
     return true;
   };
-  if (!checkId(taskId!)) return <Navigate to={"/"} replace />;
+  if (!checkId(todoId!)) return <Navigate to={"/"} replace />;
   // タスク一覧の中に該当のデータがなければリダイレクト
   useEffect(() => {
     if (!isOpen) {
@@ -69,4 +69,4 @@ const TaskEditModalPage = () => {
   );
 };
 
-export default TaskEditModalPage;
+export default TodoEditModalPage;

@@ -15,30 +15,6 @@ import { Link, Outlet } from "react-router";
  *
  * */
 
-const statusSchema = z.enum(["TODO", "PROGRESS", "DONE"]);
-const taskSchema = z.object({
-  title: z.string().min(1, "タイトルを入力してください。"),
-  contents: z.string().max(100, "文字は100文字までです。").optional().nullable(),
-  date: z.iso
-    .datetime()
-    .transform((v) => new Date(v))
-    .optional(),
-  status: statusSchema,
-});
-const registerTaskSchema = z.object({
-  title: z.string().min(1, "タイトルを入力してください。"),
-  contents: z.string().max(100, "文字は100文字までです。").optional(),
-  date: z.iso.datetime().transform((v) => new Date(v)),
-});
-const updateTaskSchema = z.object({
-  title: z.string().min(1, "タイトルを入力してください。"),
-  contents: z.string().max(100, "文字は100文字までです。").optional(),
-  status: statusSchema,
-  date: z.iso
-    .datetime()
-    .transform((v) => new Date(v))
-    .optional(),
-});
 
 const HomePageLayout = () => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
