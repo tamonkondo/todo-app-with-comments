@@ -6,5 +6,5 @@ create table if not exists public.todos (
  status todos_status default 'TODO',
  schedule date not null default current_date,
  createdAt date not null default current_date,
- updatedAt date not null default current_date,
+ updatedAt date not null default current_date
 );
