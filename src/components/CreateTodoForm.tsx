@@ -50,7 +50,7 @@ const CreateTodoForm = () => {
               name="title"
               control={control}
               render={({ field, fieldState }) => (
-                <Field data-invarlid={fieldState.invalid}>
+                <Field data-invalid={fieldState.invalid}>
                   <FieldLabel>Title</FieldLabel>
                   <Input {...field} aria-invalid={fieldState.invalid} />
                   {fieldState.invalid && <FieldError>{fieldState.error?.message}</FieldError>}
@@ -61,7 +61,7 @@ const CreateTodoForm = () => {
               name="contents"
               control={control}
               render={({ field, fieldState }) => (
-                <Field data-invarlid={fieldState.invalid}>
+                <Field data-invalid={fieldState.invalid}>
                   <FieldLabel>Contents</FieldLabel>
                   <InputGroup>
                     <InputGroupTextarea {...field} />
@@ -77,7 +77,7 @@ const CreateTodoForm = () => {
               name="due_date"
               control={control}
               render={({ field, fieldState }) => (
-                <Field data-invarlid={fieldState.invalid}>
+                <Field data-invalid={fieldState.invalid}>
                   <FieldLabel>Date</FieldLabel>
                   <Input type="date" {...field} />
                 </Field>
