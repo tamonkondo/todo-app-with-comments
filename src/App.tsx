@@ -3,8 +3,8 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import HomePage from "./pages/HomePage";
 import Layout from "./components/layout/Layout";
 import HomePageLayout from "./pages/HomePageLayout";
-import TaskEditModalPage from "./pages/TaskEditModalPage";
-
+import TodoEditModalPage from "./pages/TodoEditModalPage";
+import { Toaster } from "react-hot-toast";
 function App() {
   return (
     <>
@@ -13,11 +13,12 @@ function App() {
           <Route element={<Layout />}>
             <Route element={<HomePageLayout />}>
               <Route index element={<HomePage />} />
-              <Route path="/tasks/:taskId/edit" element={<TaskEditModalPage />} />
+              <Route path="/tasks/:todoId/edit" element={<TodoEditModalPage />} />
             </Route>
           </Route>
         </Routes>
       </BrowserRouter>
+      <Toaster />
     </>
   );
 }

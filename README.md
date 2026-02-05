@@ -1,5 +1,38 @@
 # React + TypeScript + Vite
 
+## Supabase Todoテーブルの作成手順（ローカル→クラウド）
+
+1. **ローカルで定義（マイグレーション作成）**
+   - Supabase CLIでマイグレーションを作成します。
+     ```bash
+     supabase migration new create_todos
+     ```
+   - 生成された `supabase/migrations/<timestamp>_create_todos.sql` にテーブル定義を追加します。
+     ```sql
+     create table if not exists public.todos (
+       id uuid primary key default gen_random_uuid(),
+       title text not null,
+       is_complete boolean not null default false,
+       inserted_at timestamptz not null default now()
+     );
+     ```
+
+2. **ローカルで開発（ローカルDBに反映）**
+   - ローカル環境を起動し、マイグレーションを適用します。
+     ```bash
+     supabase start
+     supabase db reset
+     ```
+   - アプリ側はローカルのSupabase URL/Key（CLI起動時に表示）を利用して開発します。
+
+3. **クラウドへの反映方法（本番/共有環境に反映）**
+   - 対象プロジェクトにリンクし、マイグレーションをプッシュします。
+     ```bash
+     supabase link --project-ref <project-ref>
+     supabase db push
+     ```
+   - 既存データがある場合は事前にバックアップを取り、適用内容をレビューしてから実行してください。
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:
