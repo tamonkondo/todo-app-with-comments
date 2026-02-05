@@ -3,64 +3,88 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { InputGroup, InputGroupAddon, InputGroupText, InputGroupTextarea } from "@/components/ui/input-group";
+import { getTodoForUpdateForm, getTodo, updateTodo } from "@/services/todo";
+import { updateTodoFormSchema, type UpdateTodo, type UpdateTodoForm } from "@/type/todo";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogOverlay, DialogTitle } from "@radix-ui/react-dialog";
-import { useEffect, useState } from "react";
+import { Controller, useForm, type SubmitHandler } from "react-hook-form";
+import toast from "react-hot-toast";
 import { Navigate, useNavigate, useParams } from "react-router";
 
 const TodoEditModalPage = () => {
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false);
   const { todoId } = useParams();
+  if (!todoId) return <Navigate to={"/"} replace />;
 
-  const checkId = (id: string) => {
-    return true;
-  };
-  if (!checkId(todoId!)) return <Navigate to={"/"} replace />;
-  // タスク一覧の中に該当のデータがなければリダイレクト
-  useEffect(() => {
-    if (!isOpen) {
-      <Navigate to={"/"} replace />;
+  const { handleSubmit, control } = useForm<UpdateTodoForm>({
+    resolver: zodResolver(updateTodoFormSchema),
+    defaultValues: async () => await getTodoForUpdateForm(todoId),
+  });
+  const onUpdateTodo: SubmitHandler<UpdateTodoForm> = async (formData: UpdateTodoForm) => {
+    const newData: UpdateTodo = {
+      id: todoId,
+      ...formData,
+    };
+    const payload = await updateTodo(newData);
+    if (payload.ok) {
+      toast.success("コメントを更新しました!");
+      if (todoId) {
+        await getTodo(todoId).then(() => navigate("/"));
+      }
+    } else {
+      toast.error("更新に失敗しました。!");
     }
-    return;
-  }, [isOpen]);
-
-  const closeOverlay = () => {
-    setIsOpen(false);
-    navigate("/");
   };
 
   return (
     <Dialog open={true}>
-      {/* コメントの簡易フォーム */}
-      {/* 編集ダイアログ これはOutletでEditにするやつ。 */}
-      {/* onOpenChangeが状態管理をしているstateのsetを渡せば、自動で背景とかのやつも消えるようになるのか */}
-      {/* showCloseButtonの閉じるボタンとかのトリガーはonOpenChangeにかかっている。 */}
-      <DialogOverlay onClick={() => closeOverlay()}>
+      <DialogOverlay onClick={() => navigate("/")}>
         <DialogContent showCloseButton={false}>
-          <form action="">
+          <form action="" onSubmit={handleSubmit((formData) => onUpdateTodo(formData))}>
             <FieldGroup className="gap-2">
-              <Field>
-                <DialogTitle>
-                  <FieldLabel>Title</FieldLabel>
-                </DialogTitle>
-                <Input />
-                <FieldError>1文字以上で入力してください。</FieldError>
-              </Field>
-              <Field>
-                <FieldLabel>Contents</FieldLabel>
-                <InputGroup>
-                  <InputGroupTextarea />
-                  <InputGroupAddon align="block-end">
-                    <InputGroupText>/100文字</InputGroupText>
-                  </InputGroupAddon>
-                </InputGroup>
-                <FieldError>1文字以上で入力してください。</FieldError>
-              </Field>
-              <Field>
-                <FieldLabel>Date</FieldLabel>
-                <Input type="date" />
-              </Field>
-              <Button className="w-[200px] mx-auto mt-5">更新</Button>
+              <Controller
+                name="title"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <DialogTitle>
+                      <FieldLabel>Title</FieldLabel>
+                    </DialogTitle>
+                    <Input {...field} />
+                    {fieldState.invalid && <FieldError>{fieldState.error?.message}</FieldError>}
+                  </Field>
+                )}
+              />
+              <Controller
+                name="contents"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel>Contents</FieldLabel>
+                    <InputGroup>
+                      <InputGroupTextarea {...field} />
+                      <InputGroupAddon align="block-end">
+                        <InputGroupText>/100文字</InputGroupText>
+                      </InputGroupAddon>
+                    </InputGroup>
+                    {fieldState.invalid && <FieldError>{fieldState.error?.message}</FieldError>}
+                  </Field>
+                )}
+              />
+              <Controller
+                name="due_date"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <Field>
+                    <FieldLabel>Date</FieldLabel>
+                    <Input type="date" {...field} />
+                    {fieldState.invalid && <FieldError>{fieldState.error?.message}</FieldError>}
+                  </Field>
+                )}
+              />
+              <Button className="w-[200px] mx-auto mt-5" type="submit">
+                更新
+              </Button>
             </FieldGroup>
           </form>
         </DialogContent>

@@ -18,7 +18,6 @@ interface Props {
   data: Todo;
 }
 const TodoCard = ({ data, commentsCount }: Props) => {
-  console.log(commentsCount);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [isViewComments, setIsViewComments] = useState(false);
 
@@ -47,7 +46,7 @@ const TodoCard = ({ data, commentsCount }: Props) => {
         <CardHeader className="px-3">
           <div className="flex justify-end">
             <Button asChild className="text-right">
-              <Link to={"/tasks/11/edit"}>Edit</Link>
+              <Link to={`/tasks/${data.id}/edit`}>Edit</Link>
             </Button>
           </div>
           <div className="flex items-center gap-2">

@@ -4,7 +4,7 @@ import HomePage from "./pages/HomePage";
 import Layout from "./components/layout/Layout";
 import HomePageLayout from "./pages/HomePageLayout";
 import TodoEditModalPage from "./pages/TodoEditModalPage";
-
+import { Toaster } from "react-hot-toast";
 function App() {
   return (
     <>
@@ -18,6 +18,7 @@ function App() {
           </Route>
         </Routes>
       </BrowserRouter>
+      <Toaster />
     </>
   );
 }
