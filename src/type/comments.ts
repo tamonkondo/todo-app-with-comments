@@ -1,33 +1,32 @@
 import z from "zod";
 import type { Todo } from "./todo";
 
-export const createCommentSchema = z.object({
-  contents: z.string().max(100, "文字は100文字までです。"),
-});
-export const insertCommentSchema = z.object({
-  contents: z.string().max(100, "文字は100文字までです。"),
-  todo_id: z.uuid(),
-});
-export const deleteCommentSchema = z.object({
-  id: z.uuid(),
-  todo_id: z.uuid(),
-});
-
-export const updateCommentFormSchema = z.object({
-  contents: z.string().max(100, "文字は100文字までです。"),
-});
-export const updateCommentSchema = z.object({
-  id: z.uuid(),
-  contents: z.string().max(100, "文字は100文字までです。"),
-  todo_id: z.uuid(),
-});
-
 export const commentSchema = z.object({
   id: z.uuid(),
   todo_id: z.uuid(),
   contents: z.string().max(100, "文字は100文字までです。"),
   updated_at: z.string(),
   created_at: z.string(),
+});
+export const createCommentSchema = commentSchema.pick({
+  contents: true,
+});
+export const insertCommentSchema = commentSchema.pick({
+  todo_id: true,
+  contents: true,
+});
+export const deleteCommentSchema = commentSchema.pick({
+  id: true,
+  todo_id: true,
+});
+
+export const updateCommentFormSchema = commentSchema.pick({
+  contents: true,
+});
+export const updateCommentSchema = commentSchema.pick({
+  id: true,
+  contents: true,
+  todo_id: true,
 });
 
 export type CreateComment = z.infer<typeof createCommentSchema>;
