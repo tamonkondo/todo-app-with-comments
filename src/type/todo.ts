@@ -14,7 +14,7 @@ export const todoSchema = z.object({
   title: z.string().min(1, "タイトルを入力してください。"),
   contents: z.string().max(100, "文字は100文字までです。").optional().nullable(),
   due_date: z.string(),
-  status: z.string(),
+  status: todoStatusSchema,
   updated_at: z.string(),
   created_at: z.string(),
 });
@@ -28,21 +28,14 @@ export const insertTodoSchema = z.object({
   contents: z.string().optional().nullable(),
   due_date: z.string().optional(),
 });
-export const updateTodoFormSchema = z.object({
-  title: z.string().min(1, "タイトルを入力してください。"),
-  contents: z.string().max(100, "文字は100文字までです。").optional(),
+export const updateTodoFormSchema = createTodoSchema.extend({
   status: todoStatusSchema,
-  due_date: z.string().optional(),
 });
-export const updateTodoSchema = z.object({
+export const updateTodoSchema = updateTodoFormSchema.extend({
   id: z.uuid(),
-  title: z.string().min(1, "タイトルを入力してください。"),
-  contents: z.string().max(100, "文字は100文字までです。").optional(),
-  status: todoStatusSchema,
-  due_date: z.string().optional(),
 });
-export const deleteTodoSchema = z.object({
-  id: z.uuid(),
+export const deleteTodoSchema = todoSchema.pick({
+  id: true,
 });
 
 export type TodoStatus = z.infer<typeof todoStatusSchema>;
