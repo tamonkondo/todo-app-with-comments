@@ -1,35 +1,34 @@
-import { createApiResult, type ApiResponse } from "@/lib/api";
+import { type ApiResponse } from "@/lib/api";
 import { type DeleteTodo, type InsertTodo, type Todo, type UpdateTodo, type UpdateTodoForm } from "@/type/todo";
 import { supabase } from "@/util/supabase";
-import type { PostgrestError } from "@supabase/supabase-js";
 
 const TABLE_NAME = "todos";
 
-export async function createTodo(data: InsertTodo) {
+export async function createTodo(data: InsertTodo): ApiResponse<Todo> {
   const payload = await supabase.from(TABLE_NAME).insert(data).select().single();
-  if (payload.error) return createApiResult({ ok: false, data: payload.error, message: "エラーが起きました" });
-  return createApiResult({ data: payload.data, message: "新しくタスクを作成しました" });
+  if (payload.error) return { ok: false, error: payload.error };
+  return { ok: true, data: payload.data };
 }
-export async function deleteTodo({ id }: DeleteTodo) {
+export async function deleteTodo({ id }: DeleteTodo): ApiResponse<never> {
   const payload = await supabase.from(TABLE_NAME).delete().eq("id", id).single();
-  if (payload.error) return createApiResult({ ok: false, data: payload.error, message: payload.error.code, status: 500 });
-  return createApiResult({ data: payload.data, message: "タスクを削除しました" });
+  if (payload.error) return { ok: false, error: payload.error };
+  return { ok: true, data: payload.data };
 }
 
-export async function updateTodo(data: UpdateTodo) {
+export async function updateTodo(data: UpdateTodo): ApiResponse<Todo> {
   const payload = await supabase.from(TABLE_NAME).update(data).eq("id", data.id).single();
-  if (payload.error) return createApiResult({ ok: false, data: payload.error, message: payload.error.code, status: 500 });
-  return createApiResult({ data: payload.data, message: "タスクを更新しました" });
+  if (payload.error) return { ok: false, error: payload.error };
+  return { ok: true, data: payload.data };
 }
-export async function getTodo(id: Todo["id"]) {
+export async function getTodo(id: Todo["id"]): ApiResponse<Todo> {
   const payload = await supabase.from(TABLE_NAME).select().eq("id", id).single();
-  if (payload.error) return createApiResult({ ok: false, data: payload.error, message: payload.error.code, status: 500 });
-  return createApiResult({ data: payload.data, message: "タスクを取得できました" });
+  if (payload.error) return { ok: false, error: payload.error };
+  return { ok: true, data: payload.data };
 }
-export async function getTodos(): ApiResponse<Todo[] | PostgrestError> {
+export async function getTodos(): ApiResponse<Todo[]> {
   const payload = await supabase.from(TABLE_NAME).select();
-  if (payload.error) return createApiResult({ ok: false, data: payload.error, message: payload.error.code, status: 500 });
-  return createApiResult({ data: payload.data, message: "タスク一覧を取得しました" });
+  if (payload.error) return { ok: false, error: payload.error };
+  return { ok: true, data: payload.data };
 }
 
 /* mapper or usecaseに将来移行させたほうがよさそうなもの */

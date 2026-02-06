@@ -12,12 +12,11 @@ import TodoList from "@/components/TodoList";
  * */
 
 const HomePageLayout = () => {
-  const [todosData, setTodosData] = useState<Todo[] | PostgrestError>();
+  const [todosData, setTodosData] = useState<Todo[] | null>(null);
 
   useEffect(() => {
     const fetchTodos = async () => {
       const payload = await getTodos();
-      // 必要であればsetTodosData(payload)などの処理を追加してください
       if (payload.ok) {
         setTodosData(payload.data);
       }
@@ -25,11 +24,20 @@ const HomePageLayout = () => {
     fetchTodos();
   }, []);
 
+  const onAddTaskAfterCreateTask = (data: Todo) => {
+    setTodosData((prev) => {
+      if (Array.isArray(prev)) {
+        return [...prev, data];
+      }
+      return [data];
+    });
+  };
+
   return (
     <>
       <TypographyH1 className="text-center">Top Page</TypographyH1>
       {/* タスク入力 */}
-      <CreateTodoForm />
+      <CreateTodoForm setAddTask={onAddTaskAfterCreateTask} />
       <TypographyH2 className="mt-4">Tasks</TypographyH2>
       {Array.isArray(todosData) && <TodoList data={todosData} />}
       {/* タスク表示 */}

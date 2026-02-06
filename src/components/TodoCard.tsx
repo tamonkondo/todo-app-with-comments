@@ -5,20 +5,23 @@ import { Button } from "./ui/button";
 import { Link } from "react-router";
 import type { Todo } from "@/type/todo";
 import { Badge } from "./ui/badge";
-import Comments from "./Comments";
-import { useState } from "react";
+import { lazy, useState } from "react";
 import { FormProvider, useForm, type SubmitHandler } from "react-hook-form";
 import { createCommentSchema, type CreateComment, type InsertComment } from "@/type/comments";
-import { createComment } from "@/services/comment";
+import { createComment, getComments } from "@/services/comment";
 import { zodResolver } from "@hookform/resolvers/zod";
 import CreateCommentForm from "./CreateCommentForm";
+import toast from "react-hot-toast";
+
+const CommentsContainer = lazy(() => import("./CommentsContainer"));
 
 interface Props {
   commentsCount: Record<string, number>;
   data: Todo;
 }
+export type ActivePopover = "header" | "bottom" | null;
 const TodoCard = ({ data, commentsCount }: Props) => {
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [activePopover, setActivePopover] = useState<ActivePopover>(null);
   const [isViewComments, setIsViewComments] = useState(false);
 
   const method = useForm<CreateComment>({
@@ -35,8 +38,10 @@ const TodoCard = ({ data, commentsCount }: Props) => {
     const payload = await createComment(newData);
 
     if (payload.ok) {
+      toast.success("新規コメントを作成しました。");
+      await getComments(data.id).then(() => setActivePopover(null));
     } else {
-      console.log(payload);
+      console.log(payload.error);
     }
   };
 
@@ -67,9 +72,18 @@ const TodoCard = ({ data, commentsCount }: Props) => {
             <Button variant="outline" className="px-2" onClick={() => setIsViewComments((prev) => !prev)}>
               View Comments <span className="rounded-full border w-[20px] aspect-square">{commentsCount?.[data.id] ?? 0}</span>
             </Button>
-            <Popover open={!!isPopoverOpen} onOpenChange={setIsPopoverOpen} modal>
+            <Popover
+              open={activePopover === "header"}
+              onOpenChange={(open) => {
+                setActivePopover(open ? "header" : null);
+                if (open) {
+                  method.reset();
+                }
+              }}
+              modal
+            >
               <PopoverTrigger asChild>
-                <Button variant="outline" className="" onClick={() => setIsPopoverOpen(true)}>
+                <Button variant="outline" className="" onClick={() => setActivePopover("header")}>
                   追加
                 </Button>
               </PopoverTrigger>
@@ -81,13 +95,21 @@ const TodoCard = ({ data, commentsCount }: Props) => {
             </Popover>
           </div>
           {isViewComments && (
-            <>
-              <Comments todoId={data.id} />
-              <hr className="mt-4" />
-              <div className="grid place-items-center mt-4">
-                <Popover open={!!isPopoverOpen} onOpenChange={setIsPopoverOpen} modal>
+            <CommentsContainer
+              todoId={data.id}
+              commentBottomRender={
+                <Popover
+                  open={activePopover === "bottom"}
+                  onOpenChange={(open) => {
+                    setActivePopover(open ? "bottom" : null);
+                    if (open) {
+                      method.reset();
+                    }
+                  }}
+                  modal
+                >
                   <PopoverTrigger asChild>
-                    <Button variant="outline" className="" onClick={() => setIsPopoverOpen(true)}>
+                    <Button variant="outline" className="" onClick={() => setActivePopover("bottom")}>
                       追加
                     </Button>
                   </PopoverTrigger>
@@ -97,8 +119,8 @@ const TodoCard = ({ data, commentsCount }: Props) => {
                     </FormProvider>
                   </PopoverContent>
                 </Popover>
-              </div>
-            </>
+              }
+            />
           )}
         </CardFooter>
       </Card>

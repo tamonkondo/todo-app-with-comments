@@ -1,12 +1,15 @@
-export type ApiResult<T> = {
-  ok?: boolean;
+import type { PostgrestError } from "@supabase/supabase-js";
+
+export type ApiSuccess<T> = {
+  ok: true;
   data: T;
-  message: string;
-  status?: number;
 };
 
-export type ApiResponse<T> = Promise<ApiResult<T>>;
+export type ApiFailure<E> = {
+  ok: false;
+  error: E;
+};
 
-export function createApiResult<T>({ ok = true, data, message, status = 200 }: ApiResult<T>): ApiResult<T> {
-  return { ok, data, message, status };
-}
+export type ApiResult<T, E = PostgrestError> = ApiSuccess<T> | ApiFailure<E>;
+
+export type ApiResponse<T, E = PostgrestError> = Promise<ApiResult<T, E>>;

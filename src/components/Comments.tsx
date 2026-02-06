@@ -23,7 +23,7 @@ const Comments = ({ todoId }: Props) => {
 
   return (
     <>
-      <ul className="grid gap-3">{Array.isArray(commentsData) && commentsData.map((item) => <CommentItem data={item} todoId={todoId} />)}</ul>
+      <ul className="grid gap-3">{Array.isArray(commentsData) && commentsData.map((item) => <CommentItem data={item} key={item.id} todoId={todoId} />)}</ul>
     </>
   );
 };

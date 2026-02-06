@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
-import { createTodoSchema, type CreateTodo, type InsertTodo } from "@/type/todo";
+import { createTodoSchema, type CreateTodo, type InsertTodo, type Todo } from "@/type/todo";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import { createTodo } from "@/services/todo";
@@ -8,20 +8,23 @@ import { Field, FieldError, FieldGroup, FieldLabel } from "./ui/field";
 import { Input } from "./ui/input";
 import { InputGroup, InputGroupAddon, InputGroupText, InputGroupTextarea } from "./ui/input-group";
 import { Button } from "./ui/button";
+import toast from "react-hot-toast";
 
-const CreateTodoForm = () => {
+interface Props {
+  setAddTask: (data: Todo) => void;
+}
+const CreateTodoForm = ({ setAddTask }: Props) => {
   const [globalError, setGlobalError] = useState("");
 
   const { handleSubmit, control, reset } = useForm<CreateTodo>({
     resolver: zodResolver(createTodoSchema),
     defaultValues: {
-      title: "test",
-      contents: "test contents",
+      title: "",
+      contents: "",
       due_date: "",
     },
   });
   const onSubmit: SubmitHandler<CreateTodo> = async (data: CreateTodo) => {
-    console.log(data);
     // 値が空の場合はオブジェクトから削除するが、型安全性を保つ
     const newData: InsertTodo = {
       ...data,
@@ -30,9 +33,12 @@ const CreateTodoForm = () => {
     };
     const payload = await createTodo(newData);
     if (payload.ok) {
+      toast.success("作成に成功しました。");
+      setAddTask(payload.data);
       reset();
     } else {
-      setGlobalError(payload.message);
+      toast.success("作成に失敗しました。");
+      setGlobalError(payload.error.message);
       console.log(payload);
     }
   };
@@ -64,7 +70,7 @@ const CreateTodoForm = () => {
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel>Contents</FieldLabel>
                   <InputGroup>
-                    <InputGroupTextarea {...field} />
+                    <InputGroupTextarea {...field} maxLength={100} />
                     <InputGroupAddon align="block-end">
                       <InputGroupText>{field.value?.length}/100文字</InputGroupText>
                     </InputGroupAddon>
@@ -83,6 +89,7 @@ const CreateTodoForm = () => {
                 </Field>
               )}
             />
+            {globalError && <p>{globalError}</p>}
             <Button className="w-[200px] mx-auto mt-5" type="submit">
               送信
             </Button>

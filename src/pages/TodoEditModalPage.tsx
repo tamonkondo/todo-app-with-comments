@@ -38,57 +38,55 @@ const TodoEditModalPage = () => {
 
   return (
     <Dialog open={true}>
-      <DialogOverlay onClick={() => navigate("/")}>
-        <DialogContent showCloseButton={false}>
-          <form action="" onSubmit={handleSubmit((formData) => onUpdateTodo(formData))}>
-            <FieldGroup className="gap-2">
-              <Controller
-                name="title"
-                control={control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <DialogTitle>
-                      <FieldLabel>Title</FieldLabel>
-                    </DialogTitle>
-                    <Input {...field} />
-                    {fieldState.invalid && <FieldError>{fieldState.error?.message}</FieldError>}
-                  </Field>
-                )}
-              />
-              <Controller
-                name="contents"
-                control={control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel>Contents</FieldLabel>
-                    <InputGroup>
-                      <InputGroupTextarea {...field} />
-                      <InputGroupAddon align="block-end">
-                        <InputGroupText>/100文字</InputGroupText>
-                      </InputGroupAddon>
-                    </InputGroup>
-                    {fieldState.invalid && <FieldError>{fieldState.error?.message}</FieldError>}
-                  </Field>
-                )}
-              />
-              <Controller
-                name="due_date"
-                control={control}
-                render={({ field, fieldState }) => (
-                  <Field>
-                    <FieldLabel>Date</FieldLabel>
-                    <Input type="date" {...field} />
-                    {fieldState.invalid && <FieldError>{fieldState.error?.message}</FieldError>}
-                  </Field>
-                )}
-              />
-              <Button className="w-[200px] mx-auto mt-5" type="submit">
-                更新
-              </Button>
-            </FieldGroup>
-          </form>
-        </DialogContent>
-      </DialogOverlay>
+      <DialogContent onPointerDownOutside={() => navigate("/")} showCloseButton={false}>
+        <form action="" onSubmit={handleSubmit((formData) => onUpdateTodo(formData))}>
+          <FieldGroup className="gap-2">
+            <Controller
+              name="title"
+              control={control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <DialogTitle>
+                    <FieldLabel>Title</FieldLabel>
+                  </DialogTitle>
+                  <Input {...field} />
+                  {fieldState.invalid && <FieldError>{fieldState.error?.message}</FieldError>}
+                </Field>
+              )}
+            />
+            <Controller
+              name="contents"
+              control={control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel>Contents</FieldLabel>
+                  <InputGroup>
+                    <InputGroupTextarea {...field} />
+                    <InputGroupAddon align="block-end">
+                      <InputGroupText>/100文字</InputGroupText>
+                    </InputGroupAddon>
+                  </InputGroup>
+                  {fieldState.invalid && <FieldError>{fieldState.error?.message}</FieldError>}
+                </Field>
+              )}
+            />
+            <Controller
+              name="due_date"
+              control={control}
+              render={({ field, fieldState }) => (
+                <Field>
+                  <FieldLabel>Date</FieldLabel>
+                  <Input type="date" {...field} />
+                  {fieldState.invalid && <FieldError>{fieldState.error?.message}</FieldError>}
+                </Field>
+              )}
+            />
+            <Button className="w-[200px] mx-auto mt-5" type="submit">
+              更新
+            </Button>
+          </FieldGroup>
+        </form>
+      </DialogContent>
     </Dialog>
   );
 };
