@@ -1,14 +1,15 @@
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
-import { createTodoSchema, type CreateTodo, type InsertTodo, type Todo } from "@/type/todo";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { createTodoSchema, type CreateTodo, type InsertTodo, type Todo } from "../types/todo";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm, type SubmitHandler } from "react-hook-form";
-import { createTodo } from "@/services/todo";
-import { Field, FieldError, FieldGroup, FieldLabel } from "./ui/field";
-import { Input } from "./ui/input";
-import { InputGroup, InputGroupAddon, InputGroupText, InputGroupTextarea } from "./ui/input-group";
-import { Button } from "./ui/button";
+
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { InputGroup, InputGroupAddon, InputGroupText, InputGroupTextarea } from "@/components/ui/input-group";
+import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
+import { createTodo } from "../services/todo";
 
 interface Props {
   setAddTask: (data: Todo) => void;

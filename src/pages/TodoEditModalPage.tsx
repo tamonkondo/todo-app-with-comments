@@ -3,10 +3,12 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { InputGroup, InputGroupAddon, InputGroupText, InputGroupTextarea } from "@/components/ui/input-group";
-import { getTodoForUpdateForm, getTodo, updateTodo } from "@/services/todo";
-import { updateTodoFormSchema, type UpdateTodo, type UpdateTodoForm } from "@/type/todo";
+import { useTodoContext } from "@/features/todo/provider/container";
+import { getTodo, getTodoForUpdateForm, updateTodo } from "@/features/todo/services/todo";
+
+import { updateTodoFormSchema, type UpdateTodo, type UpdateTodoForm } from "@/features/todo/types/todo";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { DialogOverlay, DialogTitle } from "@radix-ui/react-dialog";
+import { DialogTitle } from "@radix-ui/react-dialog";
 import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import toast from "react-hot-toast";
 import { Navigate, useNavigate, useParams } from "react-router";
@@ -15,7 +17,7 @@ const TodoEditModalPage = () => {
   const navigate = useNavigate();
   const { todoId } = useParams();
   if (!todoId) return <Navigate to={"/"} replace />;
-
+  const { setTodos } = useTodoContext();
   const { handleSubmit, control } = useForm<UpdateTodoForm>({
     resolver: zodResolver(updateTodoFormSchema),
     defaultValues: async () => await getTodoForUpdateForm(todoId),
@@ -29,7 +31,12 @@ const TodoEditModalPage = () => {
     if (payload.ok) {
       toast.success("コメントを更新しました!");
       if (todoId) {
-        await getTodo(todoId).then(() => navigate("/"));
+        await getTodo(todoId).then((todo) => {
+          if (todo.ok) {
+            setTodos((prev) => (prev ? prev.map((item) => (item.id === todo.data.id ? todo.data : item)) : null));
+            navigate("/");
+          }
+        });
       }
     } else {
       toast.error("更新に失敗しました。!");

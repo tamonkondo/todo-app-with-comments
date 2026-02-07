@@ -1,5 +1,5 @@
+import type { Todo } from "@/type/todo";
 import z from "zod";
-import type { Todo } from "./todo";
 
 export const commentSchema = z.object({
   id: z.uuid(),

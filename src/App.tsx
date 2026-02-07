@@ -5,20 +5,23 @@ import Layout from "./components/layout/Layout";
 import HomePageLayout from "./pages/HomePageLayout";
 import TodoEditModalPage from "./pages/TodoEditModalPage";
 import { Toaster } from "react-hot-toast";
+import { TodoProvider } from "./features/todo/provider/container";
 function App() {
   return (
     <>
-      <BrowserRouter>
-        <Routes>
-          <Route element={<Layout />}>
-            <Route element={<HomePageLayout />}>
-              <Route index element={<HomePage />} />
-              <Route path="/tasks/:todoId/edit" element={<TodoEditModalPage />} />
+      <TodoProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route element={<Layout />}>
+              <Route element={<HomePageLayout />}>
+                <Route index element={<HomePage />} />
+                <Route path="/tasks/:todoId/edit" element={<TodoEditModalPage />} />
+              </Route>
             </Route>
-          </Route>
-        </Routes>
-      </BrowserRouter>
-      <Toaster />
+          </Routes>
+        </BrowserRouter>
+        <Toaster />
+      </TodoProvider>
     </>
   );
 }

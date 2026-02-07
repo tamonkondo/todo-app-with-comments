@@ -1,12 +1,13 @@
 import { Controller, useForm, type SubmitHandler } from "react-hook-form";
-import { updateCommentFormSchema, type Comment, type UpdateComment, type UpdateCommentForm } from "@/type/comments";
-import { Field, FieldError } from "./ui/field";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
+import { updateCommentFormSchema, type Comment, type UpdateComment, type UpdateCommentForm } from "../types/comments";
+import { Field, FieldError } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { getComments, updateComment } from "@/services/comment";
+
 import toast from "react-hot-toast";
+import { getComments, updateComment } from "../services/comment";
 
 interface Props {
   data: Comment;

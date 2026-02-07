@@ -1,8 +1,8 @@
 import { Controller, useFormContext, type SubmitHandler } from "react-hook-form";
-import { Field, FieldError, FieldGroup } from "./ui/field";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
-import type { CreateComment } from "@/type/comments";
+import { Field, FieldError, FieldGroup } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import type { CreateComment } from "../types/comments";
 interface Props {
   onCreate: SubmitHandler<{
     contents: string;

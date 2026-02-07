@@ -1,7 +1,7 @@
 import React from "react";
 import { Controller, type Control, type SubmitHandler, type UseFormHandleSubmit } from "react-hook-form";
-import { Field, FieldError } from "./ui/field";
-import { Input } from "./ui/input";
+import { Field, FieldError } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 interface Props {
   id: string;
   control: Control<

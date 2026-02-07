@@ -1,31 +1,31 @@
 import { TypographyH1, TypographyH2 } from "@/components/ui/typography";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Outlet } from "react-router";
 import { type Todo } from "@/type/todo";
-import { getTodos } from "@/services/todo";
-import type { PostgrestError } from "@supabase/supabase-js";
-import CreateTodoForm from "@/components/CreateTodoForm";
-import TodoList from "@/components/TodoList";
+import { getTodos } from "@/features/todo/services/todo";
+import CreateTodoForm from "@/features/todo/components/CreateTodoForm";
+import TodoList from "@/features/todo/components/TodoList";
+import { useTodoContext } from "@/features/todo/provider/container";
 /**
  * タスクの種類
  *
  * */
 
 const HomePageLayout = () => {
-  const [todosData, setTodosData] = useState<Todo[] | null>(null);
+  const { todos, setTodos } = useTodoContext();
 
   useEffect(() => {
     const fetchTodos = async () => {
       const payload = await getTodos();
       if (payload.ok) {
-        setTodosData(payload.data);
+        setTodos(payload.data);
       }
     };
     fetchTodos();
   }, []);
 
   const onAddTaskAfterCreateTask = (data: Todo) => {
-    setTodosData((prev) => {
+    setTodos((prev) => {
       if (Array.isArray(prev)) {
         return [...prev, data];
       }
@@ -34,15 +34,15 @@ const HomePageLayout = () => {
   };
 
   return (
-    <>
+    <div className="pb-[100px]">
       <TypographyH1 className="text-center">Top Page</TypographyH1>
       {/* タスク入力 */}
       <CreateTodoForm setAddTask={onAddTaskAfterCreateTask} />
       <TypographyH2 className="mt-4">Tasks</TypographyH2>
-      {Array.isArray(todosData) && <TodoList data={todosData} />}
+      {Array.isArray(todos) && <TodoList data={todos} />}
       {/* タスク表示 */}
       <Outlet />
-    </>
+    </div>
   );
 };
 

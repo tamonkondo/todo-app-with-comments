@@ -1,5 +1,5 @@
 import { type ApiResponse } from "@/lib/api";
-import { type DeleteTodo, type InsertTodo, type Todo, type UpdateTodo, type UpdateTodoForm } from "@/type/todo";
+import { type DeleteTodo, type InsertTodo, type Todo, type UpdateTodo, type UpdateTodoForm, type UpdateTodoStatus } from "@/type/todo";
 import { supabase } from "@/util/supabase";
 
 const TABLE_NAME = "todos";
@@ -15,6 +15,11 @@ export async function deleteTodo({ id }: DeleteTodo): ApiResponse<never> {
   return { ok: true, data: payload.data };
 }
 
+export async function updateTodoStatus(data: UpdateTodoStatus): ApiResponse<Todo> {
+  const payload = await supabase.from(TABLE_NAME).update({ status: data.status }).eq("id", data.id).single();
+  if (payload.error) return { ok: false, error: payload.error };
+  return { ok: true, data: payload.data };
+}
 export async function updateTodo(data: UpdateTodo): ApiResponse<Todo> {
   const payload = await supabase.from(TABLE_NAME).update(data).eq("id", data.id).single();
   if (payload.error) return { ok: false, error: payload.error };

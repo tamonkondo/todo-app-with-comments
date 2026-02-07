@@ -1,5 +1,5 @@
 import z from "zod";
-import type { Database } from "./schema";
+import type { Database } from "@/type/schema";
 
 type DbTodoStatus = Database["public"]["Enums"]["todos_status"];
 
@@ -34,6 +34,10 @@ export const updateTodoFormSchema = createTodoSchema.extend({
 export const updateTodoSchema = updateTodoFormSchema.extend({
   id: z.uuid(),
 });
+export const updateTodoStatusSchema = todoSchema.pick({
+  id: true,
+  status: true,
+});
 export const deleteTodoSchema = todoSchema.pick({
   id: true,
 });
@@ -45,3 +49,4 @@ export type CreateTodo = z.infer<typeof createTodoSchema>;
 export type UpdateTodo = z.input<typeof updateTodoSchema>;
 export type UpdateTodoForm = z.input<typeof updateTodoFormSchema>;
 export type DeleteTodo = z.input<typeof deleteTodoSchema>;
+export type UpdateTodoStatus = z.infer<typeof updateTodoStatusSchema>;
